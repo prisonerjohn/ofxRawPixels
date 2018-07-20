@@ -46,20 +46,19 @@ namespace ofxRawPixels
 				return false;
 			}
 
-			ofLogVerbose(__FUNCTION__) << "Saving '"<< Serializer::getTypeStr(pixels) << "' pixels to " << path;
-
-			auto file = ofFile(path, ofFile::WriteOnly, true);
-
 			const size_t width = pixels.getWidth();
 			const size_t height = pixels.getHeight();
 			const size_t channels = pixels.getNumChannels();
+
+			ofLogNotice(__FUNCTION__) << "Saving '" << Serializer::getTypeStr(pixels) << "' pixels " << width << "x" << height << "x" << channels << " to " << path;
+
+			auto file = ofFile(path, ofFile::WriteOnly, true);
 			file.write((char *)(&width), sizeof(size_t));
 			file.write((char *)(&height), sizeof(size_t));
 			file.write((char *)(&channels), sizeof(size_t));
-
 			file.write((char *)(pixels.getData()), pixels.size() * sizeof(P));
-
 			file.close();
+
 			return true;
 		}
 
@@ -72,8 +71,6 @@ namespace ofxRawPixels
 				return false;
 			}
 
-			ofLogVerbose(__FUNCTION__) << "Loading '" << Serializer::getTypeStr(pixels) << "' pixels from " << path;
-
 			size_t width;
 			size_t height;
 			size_t channels;
@@ -81,11 +78,14 @@ namespace ofxRawPixels
 			file.read((char *)(&height), sizeof(size_t));
 			file.read((char *)(&channels), sizeof(size_t));
 
+			ofLogNotice(__FUNCTION__) << "Loading '" << Serializer::getTypeStr(pixels) << "' pixels " << width << "x" << height << "x" << channels << " from " << path;
+
 			pixels.allocate(width, height, channels);
 
 			file.read((char *)(pixels.getData()), pixels.size() * sizeof(P));
 
 			file.close();
+
 			return true;
 		}
 	};
